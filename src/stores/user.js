@@ -1,8 +1,9 @@
-import { defineStore } from "pinia";
+import { defineStore, storeToRefs } from "pinia";
 import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth'
-import { computed, ref } from "vue";
+import { ref } from "vue";
 import { auth } from "../firebaseConfig"
 import router from "@/router";
+import { useDatabaseStore } from "@/stores/database";
 
 export const useUserStore = defineStore('user', () => {
     const userData = ref(null)
@@ -36,6 +37,12 @@ export const useUserStore = defineStore('user', () => {
     }
 
     const logoutUser = async () => {
+
+        // AQUÍ ESTÁ EL PROBLEMA
+        const databaseStore = useDatabaseStore()
+        databaseStore.$reset()
+
+
         try {
             await signOut (auth)
             userData.value = null
